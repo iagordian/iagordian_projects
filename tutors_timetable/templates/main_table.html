@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/timetable_styles.css')}}">
+    <title>Расписание</title>
+</head>
+
+<body>
+
+<!--Левое боковое меню - навигация по дням недели-->
+<div class="lateral-menu left_menu">
+    {% for weekday in weekdays %}
+        <a href={{url_for('display_timetable', weekday_num=loop.index0)}}>
+            <button class="user_btn weekday_btn">{{weekday}}</button>
+        </a>
+    {% endfor %}
+</div>
+
+<!--Правое боковое меню - регистрация пользователя и переход к странице настреоек-->
+<div class="lateral-menu right_menu">
+    <div class="scroll_area">
+        <div class="scroll_area_body">
+
+            <button class="user_btn interface_btn" id="to_reg_btn">{{log_label}}</button>
+
+            <a href={{url_for('tm_settings.index')}}><button class="user_btn interface_btn right_menu_btn">Мой класс</button></a>
+
+            <table class="setting_table">
+                <tr><td colspan="2">Тьюторы</td></tr>
+                {% for tutor in tutors %}
+                    <tr>
+                        <td>{{tutor.name}}</td>
+                        <td class="setting_table_value_td">
+                            <a href="{{url_for('change_absent', person_id=tutor.id, db='tutors')}}">
+                                <button class="setting_value_btn">{% if not tutor.absent %}✓{% endif %}</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <table class="setting_table">
+                <tr><td colspan="2">Ученики</td></tr>
+                {% for student in students %}
+                    <tr>
+                        <td>{{student.name}}</td>
+                        <td class="setting_table_value_td">
+                            <a href="{{url_for('change_absent', person_id=student.id, db='students')}}">
+                                <button class="setting_value_btn">{% if not student.absent %}✓{% endif %}</button>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <a href={{url_for('download_xlsx')}}><button class="user_btn interface_btn right_menu_btn">Скачать расписание</button></a>
+        </div>
+    </div>
+</div>
+
+<!--Заголовок расписания, также является кнопкой для очистки дня недели-->
+<div class="title">
+    <h1>
+        <a href="{{url_for('clear_timetable')}}">
+            <button class="title_btn">{{weekday}}</button>
+        </a>
+    </h1>
+</div>
+
+<!--Мгновенные сообщения пользователю-->
+{% for category, message in get_flashed_messages(True) %}
+    <div class="flash {{category}}">{{message}}</div>
+{% endfor %}
+
+<!--Расписание, с которым взаимодействует пользователь-->
+<table class="timetable" border="1">
+    <tr>
+        <th class="timetable_th tn_title">Тьютор</th>
+        {% for column_ind in range(8) %}
+            <th class="timetable_th">
+                <a href="{{url_for('clear_column', column_ind=column_ind)}}">
+                    <button class="timetable_btn column_btn">{{column_ind + 1}}</button>
+                </a>
+            </th>
+        {% endfor %}
+    </tr>
+    {% for tutor in actual_tutors %}
+        <tr>
+            <td class="right_td">
+                <a href="{{url_for('clear_row', tutor_id=tutor.id)}}">
+                    <button class="timetable_btn">{{tutor.name}}</button>
+                </a>
+            </td>
+            {% set row_ind = loop.index0 %}
+            {% for cell in timetable[row_ind] %}
+                <td>
+                    {% if tutor.first_lesson <= loop.index0 and tutor.last_lesson >= loop.index0 %}
+                        <select class="timetable_cell" id="{{tutor.id}}_{{loop.index0}}">
+                            {% for opt_value, opt_text in options.items() %}
+                                <option value="{{opt_value}}" {% if cell==opt_text %} selected {% endif %}>{{opt_text}}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+<!--Окна авторизации и регистрации. Изначально скрыты, для их показа необходимо нажать кнопку на правом боковом меню-->
+<div id="grey" style="display:none">
+
+    <div class="reg_window" id="log_div" style="display:none">
+        <div class="align-right">
+            <button class="exit_btn">✕</button>
+        </div>
+        <h1>Вход</h1>
+        <form action="enter" method="post">
+            <input class="reg_input" name="login" placeholder="Логин">
+            <input class="reg_input" name="password" type="password" placeholder="Пароль">
+            <p><input type="checkbox" name="remainme">  Запомнить меня</p>
+            <input type='submit' class="user_btn interface_btn right_menu_btn reg_btn" value="ОК">
+        </form>
+            <button class="user_btn interface_btn reg_btn" id="reg_btn">Регистрация</button>
+            <a href="{{url_for('logout')}}"><button class="user_btn interface_btn reg_btn">Выход</button></a>
+    </div>
+
+    <div class="reg_window" id="reg_div" style="display:none">
+        <div class="align-right">
+            <button class="exit_btn">✕</button>
+        </div>
+        <h1>Регистрация</h1>
+        <form action="registrate" method="post">
+            <input class="reg_input" name="login" placeholder="Логин">
+            <input class="reg_input" name="email" placeholder="Адрес электронной почты">
+            <input class="reg_input" name="password" type="password" placeholder="Пароль">
+            <input class="reg_input" name="check_password" type="password" placeholder="Повторите пароль">
+            <p><input type="checkbox" name="remainme">  Запомнить меня</p>
+            <input type='submit' class="user_btn interface_btn right_menu_btn reg_btn" value="ОК">
+        </form>
+        <button class="user_btn interface_btn right_menu_btn reg_btn" id="enter_btn">Вход</button>
+    </div>
+
+</div>
+
+</body>
+
+<script type="text/javascript" src="{{url_for('static', filename='scripts/main_table.js')}}"> </script>
+
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Расписание</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='CSS/timetable_styles.css')}}">
+</head>
+<body>
+
+<!--Левое боковое меню - возврат к главной странице приложения-->
+<div class="up_menu left_up_menu">
+    <a href="{{url_for('display_timetable', weekday_num=session['weekday_num'])}}">
+        <button class="strela"><img src="static/pic/strela.png" alt="Кнопка «button»" width="40"></button>
+    </a>
+</div>
+
+<!--Правое боковое меню - выбор актуальной таблицы настроек в выпадающем списке-->
+<div class="up_menu right_up_menu">
+    <select class="choice_setting_select" id="settings_choice">
+        <option value="tutor">Тьюторы</option>
+        <option value="student"
+            {% if actual_setting_table=='student' %} selected {% endif %}>Ученики
+        </option>
+        <option value="plug"
+            {% if actual_setting_table=='plug' %} selected {% endif %}>Внеурочная работа
+        </option>
+    </select>
+</div>
+
+<!--Окно настроек тьюторов. Формы для создания новых и редактирования уже существующих-->
+<table class="settings_coodinats" id="tutors_div" {% if actual_setting_table in ['plug', 'student'] %}style="display: none"{% endif %}>
+
+    <tr>
+        <td>
+            <div class="actual_settings main_setting_div">
+                <h1>Тьюторы</h1>
+                <table class="setting_table">
+                    {% for tutor in tutors_list %}
+                        <tr>
+                            <td>
+                                <input class="setting_table_input setting_attrs" id="tutor_name_{{tutor.id}}" value="{{tutor.name}}">
+                            </td>
+
+                            <td class="setting_table_name_td">
+                                <select class="setting_table_input setting_attrs" id="tutor_option_{{tutor.id}}">
+                                    {% for opt_value, opt_text in tutor_options.items() %}
+                                        <option value="{{opt_value}}"
+                                                {% if tutor.option==opt_value %} selected {% endif %}>{{opt_text}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+
+                            <td class="setting_table_name_td">
+                                <select class="setting_table_input_small setting_attrs" id="tutor_first_{{tutor.id}}">
+                                    {% for num in range(8) %}
+                                        <option value="{{num}}" id="first_lesson_{{tutor.id}}"
+                                                {% if tutor.first_lesson==num %} selected {% endif %}>{{num+1}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+
+                            <td class="setting_table_name_td">
+                                <select class="setting_table_input_small setting_attrs" id="tutor_last_{{tutor.id}}">
+                                    {% for num in range(8) %}
+                                        <option value="{{num}}"
+                                                {% if tutor.last_lesson==num %} selected {% endif %}>{{num+1}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+
+                            <td class="setting_table_btn_td">
+                                <button value="div_{{tutor.id}}" class="setting_tm_btn tm_btns">Расп.</button>
+                            </td>
+
+
+                            <td class="setting_table_btn_td_del">
+                                <a href="{{url_for('tm_settings.delete', category='tutor', element_id=tutor.id)}}">
+                                    <button value="tutor_{{tutor.id}}" name="data" class="del_btn">✕</button>
+                                </a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <div class="add_content main_setting_div">
+
+                <form action="new_tutor" method="post">
+                    <table class="setting_table">
+                        <tr>
+                            <td>
+                                <input class="setting_table_input" name="name">
+                            </td>
+
+                            <td class="setting_table_name_td">
+                                <select class="setting_table_input" name="option">
+                                    {% for opt_value, opt_text in tutor_options.items() %}
+                                        <option value="{{opt_value}}">{{opt_text}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+
+                        </tr>
+                    </table>
+                    <button class="user_btn interface_btn">Добавить</button>
+                </form>
+
+            </div>
+        </td>
+    </tr>
+</table>
+
+<!--Окно настроек учеников. Формы для создания новых и редактирования уже существующих-->
+<table class="settings_coodinats" id="students_div" {% if actual_setting_table != 'student' %}style="display: none"{% endif %}>
+    <tr>
+        <td>
+            <div class="actual_settings main_setting_div">
+                <h1>Ученики</h1>
+                <table class="setting_table">
+                    {% for student in students_list %}
+                        <tr>
+
+                            <td class="setting_table_name_td">
+                                <input class="setting_table_input setting_attrs" id="student_name_{{student.content_id}}" value="{{student.name}}">
+                            </td>
+
+                            <td class="setting_table_value_td">
+                                <a href="{{url_for('.change_combine', student_id=student.content_id)}}">
+                                    <button class="setting_value_btn stud_comb">
+                                        {% if student.combine %}✓{% endif %}
+                                    </button>
+                                </a>
+                            </td>
+
+                            <td class="setting_table_name_td">
+                                <select class="setting_table_input_small setting_attrs" id="student_first_{{student.content_id}}">
+                                    {% for num in range(8) %}
+                                        <option value="{{num}}"
+                                                {% if student.first_lesson==num %} selected {% endif %}>{{num+1}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+
+                            <td class="setting_table_name_td">
+                                <select class="setting_table_input_small setting_attrs" id="student_last_{{student.content_id}}">
+                                    {% for num in range(8) %}
+                                        <option value="{{num}}"
+                                                {% if student.last_lesson==num %} selected {% endif %}>{{num+1}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+
+                            <td class="setting_table_btn_td_del">
+                                <a href="{{url_for('tm_settings.delete', category='student', element_id=student.content_id)}}">
+                                    <button value="student_{{student.id}}" name="data" class="del_btn">✕</button>
+                                </a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="add_content main_setting_div">
+
+                <form action="new_tm_content" method="post">
+                    <table class="setting_table">
+                        <tr>
+                            <td>
+                                <input class="setting_table_input" name="name">
+                            </td>
+
+                        </tr>
+                    </table>
+
+                    <button class="user_btn interface_btn" value="student" name="category">Добавить</button>
+
+                </form>
+
+            </div>
+        </td>
+    </tr>
+</table>
+
+<!--Окно настроек вариантов внеурочной работы. Формы для создания новых и редактирования уже существующих-->
+<table class="settings_coodinats" id="plugs_div" {% if actual_setting_table != 'plug' %}style="display: none"{% endif %}>
+    <tr>
+        <td>
+            <div class="actual_settings small_setting_div">
+                <h1>Внеурочная работа</h1>
+                <table class="setting_table">
+                    {% for plug in plugs %}
+                        <tr>
+                            <td>
+                                <input class="setting_table_input setting_attrs" id="plug_name_{{plug.content_id}}" value="{{plug.name}}">
+                            </td>
+
+                            <td class="setting_table_btn_td_del">
+                               <a href="{{url_for('tm_settings.delete', category='plug', element_id=plug.content_id)}}">
+                                    <button value="plug_{{plug.id}}" name="data" class="del_btn">✕</button>
+                               </a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div class="add_content small_setting_div">
+
+                <form action="new_tm_content" method="post">
+
+                    <table class="setting_table">
+                        <tr>
+                            <td>
+                                <input class="setting_table_input" name="name">
+                            </td>
+                        </tr>
+                    </table>
+
+                    <input type="submit" class="user_btn interface_btn" value="Добавить">
+                </form>
+
+            </div>
+        </td>
+    </tr>
+</table>
+
+<!--Таблицы уроков тьютора. Содержит формы для добавления новых уроков и редактирования уже существующих.-->
+<!--Изначально скрыты, появляются при нажатии соответствующей кнопки в таблице настроек тьюторов-->
+<div id="grey" {% if actual_setting_table in ['plug', 'student', 'tutor'] %}style="display: none"{% endif %}>
+    {% for tutor in tutors_list %}
+    <table class="tut_timetable" id="div_{{tutor.id}}" {% if actual_setting_table != tutor.id %} style="display: none" {% endif %}>
+        <tr>
+            <td>
+                <div class="actual_settings small_setting_div">
+
+                    <div class="align-right">
+                        <button class="exit_btn" value="div_{{tutor.id}}">✕</button>
+                    </div>
+
+                    <h1>{{tutor.name}} - расписание</h1>
+
+                    <table class="setting_table">
+                        {% for lesson in tutor.lessons %}
+                        {% if lesson.category == 'personal' %}
+                            <tr>
+                                <td>
+                                    <select class="setting_table_input_small setting_attrs" id="lesson_weekday_{{lesson.id}}">
+                                        {% for weekday in weekdays %}
+                                            <option value="{{loop.index0}}"
+                                            {% if lesson.weekday_num==loop.index0 %}selected{% endif %}>{{weekday}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td class="setting_table_name_td">
+                                    <select class="setting_table_input_small setting_attrs" id="lesson_number_{{lesson.id}}">
+                                        {% for num in range(8) %}
+                                            <option value="{{num}}"
+                                            {% if lesson.lesson_num==num %}selected{% endif %}>{{num+1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <select class="setting_table_input setting_attrs" id="lesson_students_{{lesson.id}}">
+                                        {% for opt_value, opt_text in lesson_options.items() %}
+                                            <option value="{{opt_value}}"
+                                            {% if lesson.option==opt_value %}selected{% endif %}>{{opt_text}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+
+                                <td class="setting_table_btn_td_del">
+                                    <a href="{{url_for('tm_settings.delete', category='lesson', element_id=lesson.id)}}">
+                                        <button value="{{tutor.id}}_{{lesson.id}}" name="data" class="del_btn">✕</button>
+                                    </a>
+                                </td>
+
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="add_content small_setting_div">
+                    <form action="new_lesson" method="post">
+                        <table class="setting_table">
+                            <tr>
+
+                                <td class="setting_table_name_td">
+                                    <select class="setting_table_input_small" name="weekday_num">
+                                        {% for weekday in weekdays %}
+                                            <option value="{{loop.index0}}">{{weekday}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td class="setting_table_name_td">
+                                    <select class="setting_table_input_small" name="lesson_num">
+                                        {% for num in range(8) %}
+                                            <option value="{{num}}">{{num+1}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td class="setting_table_name_td">
+                                    <select class="setting_table_input" name="option">
+                                        {% for opt_value, opt_text in lesson_options.items() %}
+                                            <option value="{{opt_value}}">{{opt_text}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                            </tr>
+                        </table>
+
+                        <button class="user_btn interface_btn" value="{{tutor.id}}" name="tutor_id">Добавить</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+    {% endfor %}
+</div>
+
+</body>
+
+<script type="text/javascript" src="{{url_for('static', filename='scripts/settings.js')}}"> </script>
+
+</html>

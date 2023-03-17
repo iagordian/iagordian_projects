@@ -1,0 +1,511 @@
+body {
+  background: #fff5ee;
+  margin: 0;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  overflow-y:auto;
+    }
+
+*, *::after, *:: before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    }
+
+/* Универсальные div */
+
+.lateral-menu{
+    position: fixed;
+    height: 100%;
+    width: 270px;
+    background: #bab1a6;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.3s;
+    -webkit-transition: 0.3s ease;
+    -moz-transition: 0.2s ease;
+    -o-transition: 0.2s ease;
+    }
+
+.user_btn{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    background: #F5D7BF;
+    cursor: pointer;
+    min-width: 150px;
+    }
+
+.user_btn:hover{
+    background: #E39250;
+    }
+
+.user_btn:active {
+    background: radial-gradient(#E39250, #e59c61, #E39250);
+    }
+
+#grey {
+    z-index: 1;
+    background-color: rgba(1, 1, 1, 0.75);
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+
+.interface_btn{
+    padding: 6px 12px;
+    border-radius: 6px;
+    }
+
+.align-right{
+    text-align: right;
+}
+
+.align_center{
+    text-align: right;
+}
+
+/* Левое боковое меню */
+
+.left_menu{
+    left: -263px;
+    border-right: 3px solid black;
+    }
+
+.left_menu:hover{
+    left: 0;
+    }
+
+.weekday_btn{
+    padding: 12px 24px;
+    border-radius: 16px;
+    margin: 35% 0;
+    }
+
+
+/* Правое боковое меню */
+
+.right_menu{
+    right: -263px;
+    border-left: 3px solid black;
+    }
+
+.right_menu:hover{
+    right: 0;
+    }
+
+.right_menu_btn{
+    margin: 20px auto;
+}
+
+.scroll_area{
+    width: 100%;
+    padding: 0 auto;
+    text-align: center;
+    overflow-y:auto;
+    cursor: pointer;
+    }
+
+.scroll_area_body{
+    cursor: auto;
+}
+
+.scroll_area::-webkit-scrollbar{
+    width: 6px;
+}
+
+.scroll_area::-webkit-scrollbar-track{
+    background: transparent;
+}
+
+.scroll_area::-webkit-scrollbar-thumb{
+    background: #7a6b5f;
+    border-radius: 7px;
+}
+
+/* Заголовок */
+
+.title {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.title h1 {
+  font-family: 'Merriweather', serif;
+  position: relative;
+  background: #E0DCD7;
+  font-size: 32px;
+  font-weight: normal;
+  display: inline-block;
+  margin: 0;
+  line-height: 1;
+}
+
+.title h1:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  left: 0;
+  bottom: -15px;
+  background: #E0DCD7;
+}
+
+.title h1:after {
+  content: "";
+  position: absolute;
+  height: 0;
+  width: 80%;
+  border-top: 10px solid #E0DCD7;;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -25px;
+}
+
+.title_btn{
+    font-family: 'Merriweather', serif;
+    background: transparent;
+    cursor: pointer;
+    border: none;
+    font-size: 32px;
+    font-weight: normal;
+    padding: 10px 40px;
+}
+
+.title_btn:hover {
+    background: #E6E3DF;
+}
+
+.title_btn:active {
+    background: radial-gradient(#E6E3DF, #E3DFDB, #E6E3DF);
+}
+
+/* Расписание */
+
+.timetable {
+    text-align: center;
+    vertical-align: middle;
+    border-collapse: separate;
+    border-spacing: 5px;
+    background: #E0DCD7;
+    border: 16px solid #E0DCD7;
+    border-radius: 20px;
+    margin: 0 auto;
+}
+
+.timetable td{
+    background: #F5D7BF;
+    padding: 4px 8px;
+    }
+
+.timetable_th {
+    font-size: 18px;
+    }
+
+.tn_title{
+    padding: 10px;
+    }
+
+.right_td{
+    padding: none;
+    }
+
+.timetable_btn{
+    background: transparent;
+    border : none;
+    font-size: 18px;
+    width: 100%;
+    height: 42px;
+    cursor: pointer;
+    }
+
+.column_btn:hover {
+    background: #E6E3DF;
+}
+
+.column_btn:active {
+    background: radial-gradient(#E6E3DF, #E3DFDB, #E6E3DF);
+}
+
+.row_btn:hover {
+    background: #f8e3d2;
+}
+
+.row_btn:active {
+    background: radial-gradient(#f8e3d2, #F5D7BF, #f8e3d2);
+}
+
+.timetable_cell {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    background: transparent;
+    cursor: pointer;
+    border: none !important;
+    font-size: 14px;
+    text-align: center;
+}
+
+.timetable_cell option{
+    background: #f9e7d8;
+    cursor: pointer;
+}
+
+/* Страница настроек (а еще настройки из левого бокового меню) */
+
+.up_menu{
+    margin: 0;
+    width: 200px;
+    height: 100px;
+    position: fixed;
+    background: #bab1a6;
+    border-bottom: 3px solid black;
+    text-align: center;
+    transition: all 0.3s;
+    -webkit-transition: 0.3s ease;
+    -moz-transition: 0.2s ease;
+    -o-transition: 0.2s ease;
+    top: -93px;
+}
+
+.up_menu:hover{
+    top: 0;
+}
+
+.right_up_menu{
+    right: 0;
+    border-left: 3px solid black;
+    border-bottom-left-radius: 30px;
+}
+
+.left_up_menu{
+    left: 0;
+    border-right: 3px solid black;
+    border-bottom-right-radius: 30px;
+}
+
+.setting_table{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    margin: 20px auto;
+    min-width: 150px;
+    border-spacing: 10px;
+    }
+
+.setting_table td{
+    background: #F5D7BF;
+    border: 2px solid black;
+    padding: 5px;
+}
+
+
+.setting_table_value_td{
+    width: 15px;
+    cursor: pointer;
+    height: 34px;
+}
+
+.setting_table_value_td:hover {
+    background: #f8e3d2;
+}
+
+.setting_value_btn{
+    width: 40px;
+    background: transparent;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    height: 28px;
+}
+
+.setting_value_btn:hover {
+    background: #f8e3d2;
+}
+
+.setting_value_btn:active {
+    background: radial-gradient(#f8e3d2, #F5D7BF, #f8e3d2);
+}
+
+.strela{
+    width: 60px;
+    height: 60px;
+    padding: 10px;
+    background: #F5D7BF;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.strela:hover{
+    background: #E39250;
+    }
+
+.strela:active {
+    background: radial-gradient(#E39250, #e59c61, #E39250);
+    }
+
+.choice_setting_select{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    padding: 5px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background: #F5D7BF;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.settings_coodinats{
+    margin: 90px auto;
+    border-spacing: 0;
+}
+
+.settings_coodinats td{
+    padding: 0;
+}
+
+.actual_settings{
+    width: 750px;
+    margin-right: 0;
+    background: #bab1a6;
+    text-align: center;
+    padding: 10px;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 30px;
+}
+
+.add_content{
+    width: 750px;
+    margin-top: -3px;
+    border-top: 3px solid black;
+    background: #bab1a6;
+    text-align: center;
+    padding: 10px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.main_setting_div{
+    width: 750px;
+}
+
+.small_setting_div{
+    z-index: 289;
+    width: 450px;
+}
+
+.setting_table_input{
+    padding: 5px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border: none;
+    background: transparent;
+    width: 150px;
+    margin: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.setting_table_input option{
+    background: #F5D7BF;
+   }
+
+.setting_table_input_small{
+    padding: 5px;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border: none;
+    background: transparent;
+    width: 60px;
+    margin: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.setting_table_input_small option{
+    background: #F5D7BF;
+   }
+
+.setting_table_btn_td:hover{
+    background: #f8e3d2;
+}
+
+.setting_tm_btn{
+    width: 60px;
+    background: transparent;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    height: 28px;
+    cursor: pointer;
+}
+
+.setting_tm_btn:hover{
+    background: #f8e3d2;
+}
+
+.del_btn{
+    width: 40px;
+    background: transparent;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    height: 28px;
+}
+
+.del_btn:hover {
+    background: lightcoral;
+}
+
+.setting_table_btn_td_del:hover{
+    background: lightcoral;
+}
+
+.exit_btn{
+    position: relative;
+    margin-top: 20px;
+    margin-right: 20px;
+    border 2px solid black;
+    background: #F5D7BF;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.exit_btn:hover{
+    background: #E39250;
+    }
+
+.tut_timetable{
+    margin: 100px auto;
+}
+
+/* Окошко регистрации */
+
+.reg_window {
+    margin: 100px auto;
+    width: 450px;
+    border: 3px solid black;
+    background: #bab1a6;
+    text-align: center;
+    border-radius: 30px;
+}
+
+.reg_input{
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    padding: 5px;
+    margin: 20px 50px;
+    background: #F5D7BF;
+}
+
+.reg_btn{
+    margin: 20px 50px;
+}
